@@ -12,7 +12,14 @@ using HttpClient client = new HttpClient();
 string url = "https://opensky-network.org/api/states/all";
 Console.WriteLine($"Connexion à l'API : {url}");
 
-// Exécution de la requête (Asynchrone)
+while (true)
+{
+    Console.Clear();
+    Console.WriteLine($"Démarrage du radar Opensky... Mise à jour : {DateTime.Now.ToString("HH:mm:ss")}");
+    Console.WriteLine($"Connexion à l'api {url}");
+    try
+{
+    // Exécution de la requête (Asynchrone)
 HttpResponseMessage response = await client.GetAsync(url);
 
 // Vérification du statut de la réponse
@@ -99,3 +106,25 @@ foreach (Vol v in volsFiltres.Take(10))
 }
 
 Console.WriteLine("--------------------------------------------------");
+
+    
+} catch(HttpRequestException e)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("\n ERREUR RADAR : Impossible de se connecter à OpenSky.");
+    Console.WriteLine($"Détail : {e.Message}");
+    Console.ResetColor(); // On remet la couleur normale
+}
+catch(Exception e)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine($"\n ERREUR CRITIQUE : {e.Message}");
+    Console.ResetColor();
+}
+
+Console.WriteLine("\nAttente de 20 secondes avant le prochain scan...");
+    await Task.Delay(20000);
+    
+}
+
+
